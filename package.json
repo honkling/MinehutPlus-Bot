@@ -1,0 +1,24 @@
+{
+  "name": "minehutplus",
+  "version": "0.0.1",
+  "description": "Bot for Minehut+ discord server",
+  "main": "src/index.ts",
+  "author": "honkling",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "ts-node-dev $npm_package_main"
+  },
+  "dependencies": {
+    "@discordjs/builders": "^0.6.0",
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "@types/node": "^16.7.6",
+    "@types/sqlite3": "^3.1.7",
+    "discord-api-types": "^0.22.0",
+    "discord.js": "^13.1.0",
+    "sqlite3": "^5.0.2",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.4.2",
+    "unirest": "^0.6.0"
+  }
+}
