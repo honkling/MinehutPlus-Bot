@@ -32,15 +32,15 @@ bot.on('messageCreate', async (msg: Message) => {
 	if(msg.channel.id === suggestionsChannel && !msg.author.bot) {
 		await msg.delete();
 		await msg.author.send({ content: `Hey, you aren\'t allowed to talk in <#${msg.channel.id}>! If you want to give a suggestion for Minehut+, please use /suggest.`});
+		return;
 	}
 
-	const invitesRaw = Array.from(msg.content.matchAll(INVITE_REGEX));
-	if(invitesRaw) {
+	const invites = Array.from(msg.content.matchAll(INVITE_REGEX));
+	if(invites) {
 		// An invite was sent!
-		const invites = invitesRaw[0];
 		for(const link of invites) {
 			const CODE_REGEX = /\/.+$/g;
-			const codeRaw = link.match(CODE_REGEX);
+			const codeRaw = link[0].match(CODE_REGEX);
 
 			if(!codeRaw || codeRaw.length === 0)
 				return;
@@ -54,6 +54,7 @@ bot.on('messageCreate', async (msg: Message) => {
 			
 			// The invite sent wasn't for Minehut+. Let's filter it.
 			await msg.delete();
+			return;
 		}
 	}
 });
