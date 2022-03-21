@@ -1,11 +1,10 @@
-import { Interaction, Message, MessageActionRow, MessageButton, TextChannel } from 'discord.js';
+import { Interaction, Message, MessageActionRow, MessageButton, PartialMessage, TextChannel } from 'discord.js';
 import { join } from 'path';
 import { CommandHandler } from './lib/CommandHandler';
 import { token, ownerId, suggestionsChannel } from '../config.json';
 import { MinehutClient } from './lib/MinehutClient';
 
 const bot = new MinehutClient({ intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES"], allowedMentions: { repliedUser: true, roles: [], users: [] } });
-const INVITE_REGEX = /discord(?:\.com|app\.com|\.gg)[\/invite\/]?(?:[a-zA-Z0-9\-]{2,32})/g;
 
 bot.on('ready', () => {
 	console.log(`Logged in as ${bot.user?.tag}.`);
@@ -35,28 +34,11 @@ bot.on('messageCreate', async (msg: Message) => {
 		return;
 	}
 
-	const invites = Array.from(msg.content.matchAll(INVITE_REGEX));
-	if(invites) {
-		// An invite was sent!
-		for(const link of invites) {
-			const CODE_REGEX = /\/.+$/g;
-			const codeRaw = link[0].match(CODE_REGEX);
+	await bot.scanForInvites(msg);
+});
 
-			if(!codeRaw || codeRaw.length === 0)
-				return;
-			
-			// We've got a code! Let's poll the Discord API to view information about the guild so we can filter if needed.
-			const code = codeRaw[0].substring(1);
-			const invite = await bot.fetchInvite(code);
-
-			if(!invite || !invite.guild || invite.guild.id === '872306760394891315')
-				return;
-			
-			// The invite sent wasn't for Minehut+. Let's filter it.
-			await msg.delete();
-			return;
-		}
-	}
+bot.on('messageUpdate', async (_, msg: Message | PartialMessage) => {
+	await bot.scanForInvites(msg);
 });
 
 bot.on('interactionCreate', async (i: Interaction) => {
